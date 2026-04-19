@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SurplusEasy — Bronco Sustainability Challenge 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet" />
+<style>
+
+/* ══════════════════════════════════════════════════════════════
+   ROOT & RESET
+══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red:      #dc2626;
+  --red-dark: #b91c1c;
+  --red-mid:  #ef4444;
+  --red-lite: #fef2f2;
+  --red-soft: #fee2e2;
+  --grn:      #16a34a;
+  --grn-dark: #15803d;
+  --grn-mid:  #22c55e;
+  --grn-lite: #f0fdf4;
+  --grn-soft: #dcfce7;
+  --white:    #ffffff;
+  --off:      #fafaf9;
+  --gray100:  #f3f4f6;
+  --gray200:  #e5e7eb;
+  --gray400:  #9ca3af;
+  --gray600:  #4b5563;
+  --gray800:  #1f2937;
+  --ink:      #111827;
+  --sans:     'Inter', system-ui, sans-serif;
+  --rad:      14px;
+  --rad-lg:   22px;
+  --shadow:   0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 56px rgba(0,0,0,0.12);
+}
+
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SLIDE SECTIONS
+══════════════════════════════════════════════════════════════ */
+.slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 72px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide-inner {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* alternating slide backgrounds */
+.slide.bg-white  { background: var(--white); }
+.slide.bg-off    { background: var(--off); }
+.slide.bg-green  { background: var(--grn-lite); }
+.slide.bg-red    { background: var(--red-lite); }
+
+/* ══════════════════════════════════════════════════════════════
+   FIXED UI CHROME
+══════════════════════════════════════════════════════════════ */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--grn), var(--red));
+  z-index: 500;
+  transition: width 0.4s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 0 8px rgba(22,163,74,0.4);
+}
+
+#nav-dots {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  z-index: 400;
+}
+
+.nav-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gray200);
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;
+}
+.nav-dot:hover   { background: var(--grn-mid); }
+.nav-dot.active  { background: var(--grn); transform: scale(1.6); }
+
+#slide-counter {
+  position: fixed;
+  bottom: 24px; right: 32px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--gray400);
+  z-index: 400;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ANIMATION SYSTEM
+══════════════════════════════════════════════════════════════ */
+.anim {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s cubic-bezier(.22,1,.36,1),
+              transform 0.65s cubic-bezier(.22,1,.36,1);
+}
+.anim.from-left  { transform: translateX(-40px); }
+.anim.from-right { transform: translateX(40px); }
+.anim.scale-in   { transform: scale(0.9); }
+.anim.visible    { opacity: 1; transform: translate(0) scale(1); }
+
+.d1 { transition-delay: 0.08s !important; }
+.d2 { transition-delay: 0.18s !important; }
+.d3 { transition-delay: 0.30s !important; }
+.d4 { transition-delay: 0.44s !important; }
+.d5 { transition-delay: 0.58s !important; }
+.d6 { transition-delay: 0.72s !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════════════════════════ */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-bottom: 24px;
+}
+.label-green { color: var(--grn-dark); background: var(--grn-soft); border: 1px solid rgba(22,163,74,0.25); }
+.label-red   { color: var(--red-dark); background: var(--red-soft); border: 1px solid rgba(220,38,38,0.25); }
+.label-gray  { color: var(--gray600);  background: var(--gray100);  border: 1px solid var(--gray200); }
+
+.display {
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.headline {
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.subhead {
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  font-weight: 400;
+  color: var(--gray600);
+  line-height: 1.6;
+}
+
+.red-text   { color: var(--red); }
+.green-text { color: var(--grn); }
+.muted      { color: var(--gray400); }
+
+.divider-red   { width: 56px; height: 3px; background: var(--red);  border-radius: 99px; margin: 20px 0; }
+.divider-green { width: 56px; height: 3px; background: var(--grn); border-radius: 99px; margin: 20px 0; }
+
+/* ══════════════════════════════════════════════════════════════
+   CARDS & LAYOUT
+══════════════════════════════════════════════════════════════ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+@media (max-width: 800px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 28px; }
+  #nav-dots { display: none; }
+  .slide { padding: 56px 28px; }
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--rad-lg);
+  padding: 36px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray200);
+}
+
+.card-red-top   { border-top: 3px solid var(--red); }
+.card-green-top { border-top: 3px solid var(--grn); }
+
+/* ══════════════════════════════════════════════════════════════
+   SOURCE LINE
+══════════════════════════════════════════════════════════════ */
+.source {
+  font-size: 10px;
+  color: var(--gray400);
+  letter-spacing: 0.05em;
+  margin-top: 36px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STAT BAR
+══════════════════════════════════════════════════════════════ */
+.stat-bar-wrap { display: flex; flex-direction: column; gap: 22px; }
+.stat-bar-label { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 500; margin-bottom: 8px; }
+.stat-bar-track { height: 11px; background: var(--gray100); border-radius: 99px; overflow: hidden; }
+.stat-bar-fill  { height: 100%; border-radius: 99px; width: 0; transition: width 1.3s cubic-bezier(.22,1,.36,1); }
+
+/* ══════════════════════════════════════════════════════════════
+   CHECKLIST
+══════════════════════════════════════════════════════════════ */
+.checklist      { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+.checklist li   { display: flex; align-items: flex-start; gap: 16px; font-size: 1.05rem; }
+.check-dot {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+}
+.check-green { background: var(--grn-soft); color: var(--grn-dark); }
+.check-red   { background: var(--red-soft); color: var(--red-dark); }
+
+/* ══════════════════════════════════════════════════════════════
+   STEPS / WORKFLOW
+══════════════════════════════════════════════════════════════ */
+.steps { display: flex; gap: 0; }
+.step  { flex: 1; text-align: center; position: relative; }
+.step-line {
+  position: absolute; top: 30px;
+  left: calc(50% + 32px); right: calc(-50% + 32px);
+  height: 2px; background: linear-gradient(90deg, var(--grn), var(--red));
+  z-index: 0;
+}
+.step:last-child .step-line { display: none; }
+.step-circle {
+  width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 800; position: relative; z-index: 1;
+}
+.step-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.step-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 0.82rem; color: var(--gray600); max-width: 150px; margin: 0 auto; line-height: 1.5; }
+
+@media (max-width: 800px) {
+  .steps { flex-direction: column; gap: 28px; }
+  .step-line { display: none; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FLOW DIAGRAM (economics)
+══════════════════════════════════════════════════════════════ */
+.econ-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.econ-left {
+  background: var(--grn);
+  color: #fff;
+  border-radius: var(--rad-lg);
+  padding: 40px 36px;
+  text-align: center;
+  min-width: 200px;
+}
+.econ-big   { font-size: 3.5rem; font-weight: 900; line-height: 1; }
+.econ-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; opacity: 0.85; margin-top: 8px; }
+
+.econ-right { display: flex; flex-direction: column; gap: 20px; }
+.econ-section { background: var(--white); border: 1px solid var(--gray200); border-radius: var(--rad); padding: 24px 28px; }
+.econ-section-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.econ-rows { display: flex; flex-direction: column; gap: 12px; }
+.econ-row { display: flex; align-items: center; justify-content: space-between; }
+.econ-who { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 500; }
+.econ-bar-wrap { flex: 1; margin: 0 16px; height: 8px; background: var(--gray100); border-radius: 99px; overflow: hidden; }
+.econ-bar-fill { height: 100%; border-radius: 99px; width: 0; transition: width 1.2s cubic-bezier(.22,1,.36,1); }
+.econ-amt { font-size: 0.9rem; font-weight: 700; min-width: 70px; text-align: right; }
+
+@media (max-width: 800px) {
+  .econ-grid { grid-template-columns: 1fr; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HOUSTON MAP
+══════════════════════════════════════════════════════════════ */
+.map-wrap {
+  position: relative;
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  box-shadow: var(--shadow-lg);
+}
+.map-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.map-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.5));
+}
+.map-pin {
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 5px rgba(220,38,38,0.35);
+  animation: pin-pulse 2.2s ease-in-out infinite;
+}
+.map-pin.green {
+  background: var(--grn);
+  box-shadow: 0 0 0 5px rgba(22,163,74,0.35);
+}
+@keyframes pin-pulse {
+  0%,100% { box-shadow: 0 0 0 5px rgba(220,38,38,0.35); }
+  50%      { box-shadow: 0 0 0 12px rgba(220,38,38,0.1); }
+}
+.map-pin.green { animation-name: pin-pulse-green; }
+@keyframes pin-pulse-green {
+  0%,100% { box-shadow: 0 0 0 5px rgba(22,163,74,0.35); }
+  50%      { box-shadow: 0 0 0 12px rgba(22,163,74,0.1); }
+}
+.map-radius {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed rgba(255,255,255,0.5);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.map-caption {
+  position: absolute;
+  bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 100px;
+  padding: 8px 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TIMELINE
+══════════════════════════════════════════════════════════════ */
+.timeline { display: flex; gap: 0; }
+.tl-item { flex: 1; padding: 28px 24px 24px; position: relative; }
+.tl-item::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--gray200);
+}
+.tl-item.tl-red::before   { background: var(--red); }
+.tl-item.tl-green::before { background: var(--grn); }
+.tl-item.tl-mixed::before { background: linear-gradient(90deg, var(--grn), var(--red)); }
+.tl-month { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+.tl-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+.tl-desc  { font-size: 0.85rem; color: var(--gray600); line-height: 1.5; }
+@media (max-width: 800px) {
+  .timeline { flex-direction: column; gap: 3px; }
+  .tl-item::before { top: 0; left: 0; width: 3px; height: 100%; right: auto; }
+  .tl-item { padding: 20px 20px 20px 24px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TEAM CARDS
+══════════════════════════════════════════════════════════════ */
+.team-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+@media (max-width: 900px)  { .team-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 500px)  { .team-grid { grid-template-columns: 1fr; } }
+.team-card {
+  background: var(--white);
+  border-radius: var(--rad-lg);
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray200);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.team-avatar {
+  width: 190px; height: 186px; border-radius: 50%; margin: 0 auto 20px;
+  object-fit: cover; border: 3px solid var(--gray200);
+}
+.team-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 7px; }
+.team-role { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; display: inline-block; margin-bottom: 11px; }
+.team-bio  { font-size: 0.88rem; color: var(--gray600); line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════════════════
+   HERO (SLIDE 1) — full-bleed image
+══════════════════════════════════════════════════════════════ */
+#s1 {
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-end;
+}
+#s1 .hero-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+#s1 .hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.58) 0%,
+    rgba(0,0,0,0.50) 38%,
+    rgba(0,0,0,0.84) 76%,
+    rgba(0,0,0,0.94) 100%
+  );
+  z-index: 1;
+}
+#s1 .hero-content {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 48px 72px;
+}
+#s1 .hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 100px;
+  padding: 7px 18px;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 28px;
+}
+#s1 .hero-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--grn-mid); animation: blink 1.8s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+#s1 .display { color: #fff; text-shadow: 0 2px 28px rgba(0,0,0,0.8), 0 0 64px rgba(0,0,0,0.5); }
+#s1 .tagline { color: #fff; font-size: clamp(1rem,2.2vw,1.4rem); margin-top: 16px; font-weight: 400; text-shadow: 0 1px 16px rgba(0,0,0,0.9); }
+#s1 .sdg-pill {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: var(--rad); padding: 14px 20px;
+  margin-top: 40px; color: #fff; font-size: 0.85rem;
+}
+#s1 .sdg-num { font-size: 1.8rem; font-weight: 900; color: #fbbf24; line-height: 1; }
+
+/* ══════════════════════════════════════════════════════════════
+   PROBLEM (SLIDE 2) — dark image overlay
+══════════════════════════════════════════════════════════════ */
+#s2 {
+  padding: 0; position: relative; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+#s2 .problem-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(20%);
+  z-index: 0;
+}
+#s2 .problem-overlay {
+  position: absolute; inset: 0;
+  background: rgba(17,24,39,0.82);
+  z-index: 1;
+}
+#s2 .problem-content {
+  position: relative; z-index: 2;
+  text-align: center;
+  max-width: 820px; margin: 0 auto; padding: 0 40px;
+}
+.tonight-tag {
+  font-size: 0.8rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--red-mid); margin-bottom: 40px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.tonight-tag::before,
+.tonight-tag::after { content: ''; flex: 1; max-width: 80px; height: 1px; background: rgba(239,68,68,0.4); }
+.problem-lines { display: flex; flex-direction: column; gap: 0; }
+.problem-line {
+  font-size: clamp(1.8rem, 5vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #fff;
+  overflow: hidden;
+}
+.problem-line span {
+  display: inline-block;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.7s cubic-bezier(.22,1,.36,1), opacity 0.5s;
+}
+.problem-line span.in { transform: translateY(0); opacity: 1; }
+.line-red  { color: var(--red-mid) !important; }
+.line-green{ color: var(--grn-mid) !important; }
+.problem-sub {
+  margin-top: 44px;
+  font-size: 1.4rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STAT CARDS (SLIDE 3)
+══════════════════════════════════════════════════════════════ */
+.stat-card {
+  background: var(--white);
+  border-radius: var(--rad-lg);
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray200);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+}
+.stat-card.sc-red::after   { background: var(--red); }
+.stat-card.sc-green::after { background: var(--grn); }
+.stat-card.sc-mixed::after { background: linear-gradient(90deg,var(--grn),var(--red)); }
+.stat-icon { font-size: 2.8rem; margin-bottom: 22px; }
+.big-num { font-size: clamp(2.8rem,6vw,4.5rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+.stat-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
+.stat-desc { font-size: 0.82rem; color: var(--gray600); margin-top: 12px; line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════════════════
+   APP MOCKUP (SLIDE 4)
+══════════════════════════════════════════════════════════════ */
+.phone-wrap {
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-shell {
+  background: var(--ink);
+  border-radius: 44px;
+  padding: 16px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+  width: 260px;
+  position: relative;
+}
+.phone-notch {
+  width: 80px; height: 22px;
+  background: var(--ink);
+  border-radius: 0 0 16px 16px;
+  margin: 0 auto 10px;
+  position: relative; z-index: 2;
+}
+.phone-screen {
+  background: #f8fafb;
+  border-radius: 32px;
+  overflow: hidden;
+  padding: 20px 16px;
+}
+.phone-header { font-size: 0.7rem; font-weight: 700; color: var(--grn); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.phone-items { display: flex; flex-direction: column; gap: 10px; }
+.phone-item {
+  background: var(--white);
+  border: 1px solid var(--gray200);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.phone-item-name { font-size: 0.75rem; font-weight: 600; color: var(--ink); }
+.phone-item-rest { font-size: 0.65rem; color: var(--gray400); margin-top: 2px; }
+.phone-item-price { font-size: 0.9rem; font-weight: 800; color: var(--grn); }
+.phone-timer { margin-top: 14px; font-size: 0.68rem; text-align: center; color: var(--gray600); }
+.phone-timer span { color: var(--red); font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════════
+   IMPACT ICONS (SLIDE 5)
+══════════════════════════════════════════════════════════════ */
+.impact-card {
+  background: var(--white);
+  border-radius: var(--rad-lg);
+  padding: 40px 32px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray200);
+}
+.impact-icon-wrap {
+  width: 80px; height: 80px; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; margin: 0 auto 24px;
+}
+.impact-title { font-weight: 800; font-size: 1.2rem; margin-bottom: 12px; }
+.impact-desc  { font-size: 0.88rem; color: var(--gray600); line-height: 1.65; }
+.impact-footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gray200); font-size: 0.78rem; font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════════
+   CTA BLOCK (SLIDE 11)
+══════════════════════════════════════════════════════════════ */
+.cta-block {
+  background: linear-gradient(135deg, var(--grn-lite), #fff, var(--red-lite));
+  border: 1px solid var(--gray200);
+  border-radius: var(--rad-lg);
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-top: 44px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PHOTO CARDS (used in split slides)
+══════════════════════════════════════════════════════════════ */
+.photo-card {
+  border-radius: var(--rad-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.photo-card img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  min-height: 320px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   GROWTH ROADMAP (SLIDE 12 / next steps)
+══════════════════════════════════════════════════════════════ */
+.roadmap { display: flex; gap: 0; }
+.roadmap-item {
+  flex: 1; text-align: center; position: relative;
+  padding: 32px 20px 28px;
+}
+.roadmap-item::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px; background: var(--gray200);
+}
+.roadmap-item.rm-1::before { background: var(--grn); }
+.roadmap-item.rm-2::before { background: linear-gradient(90deg, var(--grn), var(--grn-mid)); }
+.roadmap-item.rm-3::before { background: linear-gradient(90deg, var(--grn-mid), var(--red-mid)); }
+.roadmap-item.rm-4::before { background: var(--red); }
+.roadmap-dot {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem; margin: 0 auto 16px;
+}
+.roadmap-stage { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.roadmap-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+.roadmap-desc  { font-size: 0.78rem; color: var(--gray600); line-height: 1.5; }
+@media (max-width: 700px) {
+  .roadmap { flex-direction: column; gap: 2px; }
+  .roadmap-item::before { top:0; left:0; width:3px; height:100%; right:auto; }
+  .roadmap-item { text-align: left; padding: 20px 20px 20px 24px; }
+  .roadmap-dot { margin: 0 0 12px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── Progress & Navigation ── -->
+<div id="progress-bar" style="width:0%"></div>
+<nav id="nav-dots">
+  <button class="nav-dot active" data-slide="0"></button>
+  <button class="nav-dot" data-slide="1"></button>
+  <button class="nav-dot" data-slide="2"></button>
+  <button class="nav-dot" data-slide="3"></button>
+  <button class="nav-dot" data-slide="4"></button>
+  <button class="nav-dot" data-slide="5"></button>
+  <button class="nav-dot" data-slide="6"></button>
+  <button class="nav-dot" data-slide="7"></button>
+  <button class="nav-dot" data-slide="8"></button>
+  <button class="nav-dot" data-slide="9"></button>
+  <button class="nav-dot" data-slide="10"></button>
+  <button class="nav-dot" data-slide="11"></button>
+  <button class="nav-dot" data-slide="12"></button>
+  <button class="nav-dot" data-slide="13"></button>
+</nav>
+<div id="slide-counter">01 / 14</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 1 — HERO
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s1">
+  <img class="hero-img"
+       src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?auto=format&fit=crop&w=1600&q=80"
+       alt="Restaurant kitchen at end of service" />
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="anim">
+      <div class="hero-badge"><span class="hero-dot"></span>Bronco Sustainability Challenge 2026</div>
+    </div>
+    <div class="anim d1">
+      <div class="display">SurplusEasy</div>
+    </div>
+    <div class="anim d2">
+      <p class="tagline">Turning surplus food into late-night service</p>
+    </div>
+    <div class="anim d3">
+      <div class="sdg-pill">
+        <div class="sdg-num">12</div>
+        <div>
+          <div style="font-weight:700;font-size:0.9rem;">UN Sustainability Development Goal</div>
+          <div style="opacity:0.7;font-size:0.82rem;">Responsible Consumption &amp; Production</div>
+        </div>
+      </div>
+    </div>
+    <div class="anim d4" style="margin-top:44px;display:flex;gap:28px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.85rem;"><span style="color:var(--grn-mid);">●</span> Sustainability</div>
+      <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.85rem;"><span style="color:var(--red-mid);">●</span> Profitability</div>
+      <div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.85rem;"><span style="color:#fbbf24;">●</span> Pilot Concept for Houston</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 2 — TEAM
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="steam">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="anim d1"><h2 class="headline">Meet the <span class="red-text">TEAM</span></h2></div>
+    <div class="anim d1" style="margin-top:8px;margin-bottom:36px;">
+      <p class="subhead">Student professionals combining experience and passion to deliver results.</p>
+    </div>
+    <div class="team-grid">
+      <div class="anim scale-in d2">
+        <div class="team-card">
+          <img class="team-avatar" src="Cai.jpg" alt="Cai Hesse" />
+          <div class="team-name">Cai Hesse</div>
+          <div class="team-role" style="background:var(--grn-soft);color:var(--grn-dark);">Team Lead</div>
+          <div class="team-bio">BBA Human Resources Management</div>
+        </div>
+      </div>
+      <div class="anim scale-in d3">
+        <div class="team-card">
+          <img class="team-avatar" src="Ephraim.jpg" alt="Ephraim Bahre" />
+          <div class="team-name">Ephraim Bahre</div>
+          <div class="team-role" style="background:var(--grn-soft);color:var(--grn-dark);">Data Analyst</div>
+          <div class="team-bio">MBA General <br />Management</div>
+        </div>
+      </div>
+      <div class="anim scale-in d4">
+        <div class="team-card">
+          <img class="team-avatar" src="Ruth.jpg" alt="Ruth Bahre" />
+          <div class="team-name">Ruth Bahre</div>
+          <div class="team-role" style="background:var(--grn-soft);color:var(--grn-dark);">App Developer</div>
+          <div class="team-bio">MSc Electrical and Computer Engineering</div>
+        </div>
+      </div>
+      <div class="anim scale-in d5">
+        <div class="team-card">
+          <img class="team-avatar" src="Betsy.jpg" alt="Betsy Habteyohnes" />
+          <div class="team-name">Betsy Habteyohnes</div>
+          <div class="team-role" style="background:var(--grn-soft);color:var(--grn-dark);">Market Researcher</div>
+          <div class="team-bio">BS Exercise Science<br />Clinical</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 3 — TONIGHT (Problem Statement)
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s2">
+  <img class="problem-img"
+       src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1600&q=80"
+       alt="Restaurant closing at night" />
+  <div class="problem-overlay"></div>
+  <div class="problem-content">
+    <div class="tonight-tag" id="tonight-tag" style="opacity:0;transition:opacity 0.5s;">Tonight</div>
+    <div class="problem-lines" id="problem-lines">
+      <div class="problem-line"><span>Dinner is cooked.</span></div>
+      <div class="problem-line"><span>Dinner is paid for.</span></div>
+      <div class="problem-line line-red"><span>Dinner is thrown away.</span></div>
+    </div>
+    <p class="problem-sub" id="problem-sub" style="opacity:0;transition:opacity 0.7s 0.9s;">
+      The gap is not food — the gap is <strong style="color:#fff;">timing</strong> and <strong style="color:#fff;">access.</strong>
+    </p>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 4 — THREE SIGNALS
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-off" id="s3">
+  <div class="slide-inner" style="text-align:center;">
+    <div class="anim"><span class="label label-green">Why this matters</span></div>
+    <div class="anim d1">
+      <h2 class="headline">Three signals that make this<br><span class="green-text">worth building.</span></h2>
+    </div>
+    <div class="grid-3" style="margin-top:52px;">
+      <div class="anim scale-in d2">
+        <div class="stat-card sc-green">
+          <div class="stat-icon">🍽️</div>
+          <div class="big-num green-text" data-count="73.9" data-suffix="M">0</div>
+          <div class="stat-tag green-text">Tons of surplus food</div>
+          <div class="stat-desc">U.S. surplus food in 2023 (i.e., edible food that never reached a customer)</div>
+        </div>
+      </div>
+      <div class="anim scale-in d3">
+        <div class="stat-card sc-red">
+          <div class="stat-icon">🌙</div>
+          <div class="big-num red-text" data-count="21" data-suffix="M+">0</div>
+          <div class="stat-tag red-text">Overnight workers</div>
+          <div class="stat-desc">People working night shifts and hungry with few affordable options</div>
+        </div>
+      </div>
+      <div class="anim scale-in d4">
+        <div class="stat-card sc-mixed">
+          <div class="stat-icon">🚗</div>
+          <div class="big-num" style="color:var(--gray800);" data-count="8" data-suffix="%">0</div>
+          <div class="stat-tag" style="color:var(--gray600);">No vehicle available</div>
+          <div class="stat-desc">Households with no car. Delivery-first model serves them directly</div>
+        </div>
+      </div>
+    </div>
+    <p class="anim d5 source">ReFED 2025 · Wong et al. 2025 · Pew Research Center / U.S. Census 2024</p>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 5 — WHAT SURPLUSEASY DOES
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="s4">
+  <div class="slide-inner">
+    <div class="grid-2">
+      <div>
+        <div class="anim"><span class="label label-green">The Solution</span></div>
+        <div class="anim d1"><h2 class="headline">A second shift<br>for <span class="green-text">food.</span></h2></div>
+        <div class="divider-green anim d2"></div>
+        <div class="anim d2"><p class="subhead">A short ordering window that fits naturally into kitchen close-down, without creating an extra burden on employees.</p></div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;margin-top:32px;">
+          <div class="anim d3" style="display:flex;align-items:flex-start;gap:16px;padding:20px 24px;background:var(--grn-lite);border-radius:var(--rad);border:1px solid rgba(22,163,74,0.2);">
+            <div style="width:34px;height:34px;background:var(--grn);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem;flex-shrink:0;">01</div>
+            <div><div style="font-weight:700;margin-bottom:4px;">Short surplus window</div><div style="font-size:0.85rem;color:var(--gray600);">Aligned to kitchen order cut-off. No new cooking after close.</div></div>
+          </div>
+          <div class="anim d4" style="display:flex;align-items:flex-start;gap:16px;padding:20px 24px;background:var(--grn-lite);border-radius:var(--rad);border:1px solid rgba(22,163,74,0.2);">
+            <div style="width:34px;height:34px;background:var(--grn);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem;flex-shrink:0;">02</div>
+            <div><div style="font-weight:700;margin-bottom:4px;">Real meals &amp; clear kits</div><div style="font-size:0.85rem;color:var(--gray600);">Customers see actual menu items.</div></div>
+          </div>
+          <div class="anim d5" style="display:flex;align-items:flex-start;gap:16px;padding:20px 24px;background:var(--red-lite);border-radius:var(--rad);border:1px solid rgba(220,38,38,0.2);">
+            <div style="width:34px;height:34px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.85rem;flex-shrink:0;">03</div>
+            <div><div style="font-weight:700;margin-bottom:4px;">Tight local radius delivery</div><div style="font-size:0.85rem;color:var(--gray600);">Protects food quality and keeps timing reliable.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="anim from-right d2" style="display:flex;align-items:center;justify-content:center;height:100%;">
+        <video
+          src="App Screen Recording.mp4"
+          autoplay loop muted playsinline
+          style="height:90vh;max-height:680px;width:auto;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.25);pointer-events:none;">
+        </video>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 6 — IMPACT IS SHARED
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-off" id="s5" style="padding:40px 48px 40px;display:flex;flex-direction:column;">
+  <div style="text-align:center;flex-shrink:0;">
+    <div class="anim"><span class="label label-gray">Shared Value</span></div>
+    <div class="anim d1"><h2 class="headline">Impact is <span class="green-text">shared.</span><br>Profit is <span class="red-text">real.</span></h2></div>
+    <div class="anim d1" style="margin-top:6px;margin-bottom:20px;"><p class="subhead">Every order creates value across the entire chain.</p></div>
+  </div>
+
+    <!-- 4-card flow grid -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;flex:1;min-height:0;position:relative;">
+
+      <!-- flow arrows between cards -->
+      <div style="position:absolute;top:82px;left:calc(25% - 10px);font-size:1.4rem;color:var(--gray400);z-index:2;transform:translateX(-50%);">→</div>
+      <div style="position:absolute;top:82px;left:calc(50% - 10px);font-size:1.4rem;color:var(--gray400);z-index:2;transform:translateX(-50%);">→</div>
+      <div style="position:absolute;top:82px;left:calc(75% - 10px);font-size:1.4rem;color:var(--gray400);z-index:2;transform:translateX(-50%);">→</div>
+
+      <!-- 01 — RESTAURANTS -->
+      <div class="anim scale-in d2" style="background:var(--white);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:3px solid var(--grn);">
+        <div style="height:200px;overflow:hidden;position:relative;flex-shrink:0;">
+          <img src="Closedsign.jpg" alt="Restaurant closing down"
+            style="width:100%;height:100%;object-fit:cover;display:block;"
+            onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=600&q=80'" />
+        </div>
+        <div style="padding:20px 18px 24px;flex:1;display:flex;flex-direction:column;">
+          <div style="font-weight:800;font-size:1.2rem;margin-bottom:8px;color:var(--ink);">Restaurants</div>
+          <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;flex:1;">Recover revenue from surplus food that would otherwise have zero value. No extra cooking, no extra staff.</div>
+          <div style="margin-top:14px;font-size:0.72rem;font-weight:700;color:var(--grn);text-transform:uppercase;letter-spacing:0.08em;">Revenue Recovery</div>
+        </div>
+      </div>
+
+      <!-- 02 — DRIVERS -->
+      <div class="anim scale-in d3" style="background:var(--white);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:3px solid #6366f1;">
+        <div style="height:200px;overflow:hidden;position:relative;flex-shrink:0;">
+          <img src="driver.jpg"
+            alt="Food delivery driver"
+            style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" />
+        </div>
+        <div style="padding:20px 18px 24px;flex:1;display:flex;flex-direction:column;">
+          <div style="font-weight:800;font-size:1.2rem;margin-bottom:8px;color:var(--ink);">Drivers</div>
+          <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;flex:1;">Earn base pay plus 100% of tips. Short-radius routes mean more deliveries per shift, less idle time.</div>
+          <div style="margin-top:14px;font-size:0.72rem;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;">Flexible Earnings</div>
+        </div>
+      </div>
+
+      <!-- 03 — CUSTOMERS -->
+      <div class="anim scale-in d4" style="background:var(--white);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:3px solid #f59e0b;">
+        <div style="height:200px;overflow:hidden;position:relative;flex-shrink:0;">
+          <img src="customers.png"
+            alt="Customer ordering food on phone"
+            style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+        <div style="padding:20px 18px 24px;flex:1;display:flex;flex-direction:column;">
+          <div style="font-weight:800;font-size:1.2rem;margin-bottom:8px;color:var(--ink);">Customers</div>
+          <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;flex:1;">Access to real meals at lower prices during late hours. No car needed. No skipping dinner.</div>
+          <div style="margin-top:14px;font-size:0.72rem;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.08em;">Affordable Access</div>
+        </div>
+      </div>
+
+      <!-- 04 — ENVIRONMENT -->
+      <div class="anim scale-in d5" style="background:var(--white);border-radius:var(--rad-lg);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;border-top:3px solid var(--red);">
+        <div style="height:200px;overflow:hidden;position:relative;flex-shrink:0;">
+          <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80"
+            alt="Green environment"
+            style="width:100%;height:100%;object-fit:cover;display:block;" />
+        </div>
+        <div style="padding:20px 18px 24px;flex:1;display:flex;flex-direction:column;">
+          <div style="font-weight:800;font-size:1.2rem;margin-bottom:8px;color:var(--ink);">Environment</div>
+          <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;flex:1;">Every meal delivered is food diverted from landfill. The EPA documents the direct link between landfilled food and methane emissions.</div>
+          <div style="margin-top:14px;font-size:0.72rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.08em;">Measurable Diversion</div>
+        </div>
+      </div>
+
+    </div>
+    <p class="anim d6 source" style="flex-shrink:0;margin-top:10px;">EPA 2023 · ReFED 2025</p>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 7 — WHAT WE LEARNED
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="s10">
+  <div class="slide-inner">
+    <div class="grid-2" style="gap:64px;">
+      <div>
+        <div class="anim"><span class="label label-gray">Market Research</span></div>
+        <div class="anim d1"><h2 class="headline">What we learned<br>from <span class="green-text">restaurants.</span></h2></div>
+        <div class="divider-green anim d2"></div>
+        <div class="anim d2"><p class="subhead">Outreach was not to prove the market — it was to test assumptions.</p></div>
+
+        <div class="anim d3" style="margin-top:16px;">
+          <div style="display:flex;align-items:center;gap:20px;padding:24px 28px;background:var(--grn-lite);border-radius:var(--rad-lg);border:1px solid rgba(22,163,74,0.2);">
+            <div style="font-size:3.75rem;font-weight:900;color:var(--grn);line-height:1;">17</div>
+            <div>
+              <div style="font-weight:700;font-size:1.1rem;">Owners Contacted</div>
+              <div style="font-size:1.0rem;color:var(--gray600);margin-top:4px;">Outreach across diverse restaurant types</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="anim d5" style="margin-top:16px;border-left:3px solid var(--grn);padding:16px 20px;background:var(--grn-lite);border-radius:0 var(--rad) var(--rad) 0;">
+          <div style="font-weight:700;margin-bottom:8px;font-size:1.1rem;">Key Takeaway</div>
+          <div style="font-size:1.0rem;color:var(--gray600);line-height:1.65;">Surplus concentrates where volume is higher. Pilot partners should be higher-volume with predictable surplus and staff capacity for a short daily workflow.</div>
+        </div>
+
+      </div>
+
+      <div style="padding-top:8px;display:flex;flex-direction:column;gap:20px;">
+        <div class="anim d2" style="font-size:1.2rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray400);text-align:center;">Restaurant Response Breakdown</div>
+
+        <!-- Donut + Legend side by side -->
+        <div style="display:flex;align-items:center;gap:20px;min-width:0;">
+
+          <!-- Donut Chart -->
+          <div class="anim scale-in d3" style="position:relative;flex-shrink:0;padding-bottom:14px;">
+            <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:130px;height:16px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,0.22) 0%,transparent 70%);pointer-events:none;"></div>
+            <svg id="donut-svg" width="240" height="240" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="76" fill="none" stroke="#e5e7eb" stroke-width="44"/>
+              <circle id="dc-seg1" cx="100" cy="100" r="76" fill="none" stroke="var(--grn)" stroke-width="44"
+                stroke-dasharray="0 477.52" stroke-linecap="butt"
+                transform="rotate(-90 100 100)" style="transition:none;"/>
+              <circle id="dc-seg2" cx="100" cy="100" r="76" fill="none" stroke="#faa91c" stroke-width="44"
+                stroke-dasharray="0 477.52" stroke-linecap="butt"
+                transform="rotate(-90 100 100)" style="transition:none;"/>
+              <circle id="dc-seg3" cx="100" cy="100" r="76" fill="none" stroke="#2066b1" stroke-width="44"
+                stroke-dasharray="0 477.52" stroke-linecap="butt"
+                transform="rotate(-90 100 100)" style="transition:none;"/>
+              <circle id="dc-seg4" cx="100" cy="100" r="76" fill="none" stroke="var(--gray400)" stroke-width="44"
+                stroke-dasharray="0 477.52" stroke-linecap="butt"
+                transform="rotate(-90 100 100)" style="transition:none;"/>
+              <circle cx="100" cy="100" r="52" fill="white"/>
+              <text x="100" y="96" text-anchor="middle" font-size="30" font-weight="900"
+                font-family="Inter,system-ui,sans-serif" fill="#111827">17</text>
+              <text x="100" y="112" text-anchor="middle" font-size="10" font-weight="700"
+                font-family="Inter,system-ui,sans-serif" fill="#9ca3af" letter-spacing="1.5">OWNERS</text>
+            </svg>
+          </div>
+
+          <!-- Legend -->
+          <div class="anim d4" style="display:flex;flex-direction:column;gap:7px;flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--grn-lite);border-radius:var(--rad);border:1px solid rgba(22,163,74,0.15);">
+              <div style="width:11px;height:11px;border-radius:3px;background:var(--grn);flex-shrink:0;"></div>
+              <div style="flex:1;font-size:0.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Surplus &amp; Interested</div>
+              <div style="font-weight:800;font-size:0.78rem;color:var(--grn);flex-shrink:0;">18%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:#fffbeb;border-radius:var(--rad);border:1px solid rgba(245,158,11,0.2);">
+              <div style="width:11px;height:11px;border-radius:3px;background:#faa91c;flex-shrink:0;"></div>
+              <div style="flex:1;font-size:0.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Surplus donated</div>
+              <div style="font-weight:800;font-size:0.78rem;color:#eb9e1a;flex-shrink:0;">12%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:#eff6ff;border-radius:var(--rad);border:1px solid rgba(59,130,246,0.15);">
+              <div style="width:11px;height:11px;border-radius:3px;background:#2066b1;flex-shrink:0;"></div>
+              <div style="flex:1;font-size:0.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">No consistent surplus</div>
+              <div style="font-weight:800;font-size:0.78rem;color:#2066b1;flex-shrink:0;">23%</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--gray100);border-radius:var(--rad);border:1px solid var(--gray200);">
+              <div style="width:11px;height:11px;border-radius:3px;background:var(--gray400);flex-shrink:0;"></div>
+              <div style="flex:1;font-size:0.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Incomplete conversations</div>
+              <div style="font-weight:800;font-size:0.78rem;color:var(--gray400);flex-shrink:0;">47%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote from Three Brothers Bakery -->
+        <div class="anim d5" style="width:100%;background:var(--white);border:1.5px solid var(--gray200);border-radius:var(--rad-lg);padding:16px 20px;">
+          <div style="font-size:2rem;line-height:0.5;color:var(--grn);font-weight:900;margin-bottom:8px;">"</div>
+          <p style="font-size:0.8rem;color:var(--gray600);line-height:1.9;font-style:italic;">Something like this could help reduce waste. We're always walking that line between having enough for our guests and not ending the day with product we can't sell… If we can implement this in a way that smoothly fits our process and protects that balance, the food industry could benefit.</p>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:9px;">
+            <div>
+              <div style="font-size:0.78rem;font-weight:700;color:var(--ink);">Three Brothers Bakery</div>
+              <div style="font-size:0.72rem;color:var(--gray400);">Houston, TX · Potential pilot partner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 8 — WHY HOUSTON
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s9" style="padding:0;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
+
+  <!-- LEFT: text + cards -->
+  <div style="padding:52px 52px;display:flex;flex-direction:column;justify-content:center;background:#fff;">
+    <div class="anim"><span class="label label-red">Pilot Location</span></div>
+    <div class="anim d1"><h2 class="headline">One metro.<br><span class="red-text">Big signal.</span></h2></div>
+    <div class="anim d1" style="margin-top:10px;margin-bottom:28px;">
+      <p class="subhead">Houston offers the scale, logistics, and market diversity to run a tight-radius pilot that can actually prove the model.</p>
+    </div>
+
+    <!-- Stat cards — 2×2 grid, bigger -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="anim d2" style="background:var(--gray100);border:1px solid var(--gray200);border-radius:var(--rad-lg);padding:24px 26px;">
+        <div style="font-size:2rem;margin-bottom:10px;">📊</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:6px;">Diverse restaurant market</div>
+        <div style="font-size:0.85rem;color:var(--gray600);line-height:1.55;">~ 13,000 restaurants ranging from Vietnamese-Cajun fusion to high-end steakhouses</div>
+      </div>
+      <div class="anim d3" style="background:var(--gray100);border:1px solid var(--gray200);border-radius:var(--rad-lg);padding:24px 26px;">
+        <div style="font-size:2rem;margin-bottom:10px;">🚚</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:6px;">Logistics backbone</div>
+        <div style="font-size:0.85rem;color:var(--gray600);line-height:1.55;">Houston's infrastructure matters when the focus is time</div>
+      </div>
+      <div class="anim d4" style="background:var(--gray100);border:1px solid var(--gray200);border-radius:var(--rad-lg);padding:24px 26px;">
+        <div style="font-size:2rem;margin-bottom:10px;">📋</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:6px;">No state income tax</div>
+        <div style="font-size:0.85rem;color:var(--gray600);line-height:1.55;">Texas levies no individual income tax. However, franchise tax applies to businesses.</div>
+      </div>
+      <div class="anim d5" style="background:var(--red-lite);border:1px solid rgba(220,38,38,0.2);border-radius:var(--rad-lg);padding:24px 26px;">
+        <div style="font-size:2rem;margin-bottom:10px;">🎯</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--red-dark);margin-bottom:6px;">Pilot targets</div>
+        <div style="font-size:0.85rem;color:var(--gray600);line-height:1.55;">4–6 partners <br>2–3 nights/wk <br>5–8 mi radius</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: map image in rounded frame + badge below -->
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px 44px;background:var(--gray100);">
+    <!-- Rounded map image box -->
+    <div class="anim scale-in d2" style="width:100%;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.14);flex:1;min-height:0;">
+      <img src="Houston map.jpg" alt="Downtown Houston restaurant map"
+        style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;"
+        onerror="this.parentElement.style.background='#e5e7eb'" />
+    </div>
+    <!-- Pilot Zone badge below the map -->
+    <div class="anim d4" style="flex-shrink:0;">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1.5px solid rgba(220,38,38,0.3);border-radius:100px;padding:10px 22px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--red-dark);box-shadow:0 2px 12px rgba(220,38,38,0.1);">
+        <span style="width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block;"></span>
+        Houston Downtown — Pilot Zone
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 9 — WORKFLOW (T40 / T30 / T15)
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s6" style="padding:0;position:relative;overflow:hidden;">
+  <!-- Full-bleed background: restaurant closing down -->
+  <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80"
+    alt="Restaurant closing down for the night"
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;" />
+  <!-- Dark overlay -->
+  <div style="position:absolute;inset:0;background:rgba(0,0,0,0.74);"></div>
+
+  <!-- Content layer -->
+  <div style="position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;">
+    <div class="slide-inner" style="width:100%;">
+      <div class="grid-2" style="gap:64px;align-items:start;">
+
+        <div>
+          <div class="anim"><span class="label" style="background:rgba(220,38,38,0.85);color:#fff;border:none;">Feasibility</span></div>
+          <div class="anim d1"><h2 class="headline" style="color:#fff;">The last<br><span style="color:#f87171;">30 minutes.</span></h2></div>
+          <div class="divider-red anim d2"></div>
+          <div class="anim d2"><p class="subhead" style="color:rgba(255,255,255,0.78);">Most good ideas fail at the operational level. SurplusEasy is built around how kitchens actually close.</p></div>
+
+          <!-- Design principle box -->
+          <div class="anim d3" style="margin-top:24px;background:rgba(255,255,255,0.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.18);border-left:4px solid #f87171;border-radius:var(--rad-lg);padding:22px 26px;">
+            <div style="font-size:0.9rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:#f87171;margin-bottom:10px;">The design principle</div>
+            <p style="font-size:0.875rem;color:rgba(255,255,255,0.88);line-height:1.72;font-style:italic;">"Reduce friction and cognitive load at the end of a shift so participation feels like part of closing down, not an extra project."</p>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0;justify-content:space-between;height:100%;">
+
+          <div class="anim d2" style="display:flex;gap:0;align-items:stretch;">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-right:28px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--grn);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;">T-40</div>
+              <div style="flex:1;width:3px;background:linear-gradient(to bottom,var(--grn),var(--red));margin:10px 0;"></div>
+            </div>
+            <div style="padding:6px 0 44px;">
+              <div style="font-size:0.75rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#4ade80;margin-bottom:8px;">Plan Surplus</div>
+              <div style="font-weight:700;font-size:1.3rem;margin-bottom:8px;color:#fff;">Staff list what's available</div>
+              <div style="font-size:1rem;color:rgba(255,255,255,0.68);line-height:1.6;">Takes minutes. No guesswork. Confirm quantity and allergens for the night's surplus window.</div>
+            </div>
+          </div>
+
+          <div class="anim d3" style="display:flex;gap:0;align-items:stretch;">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-right:28px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--grn),var(--red));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;">T-30</div>
+              <div style="flex:1;width:3px;background:var(--red);margin:10px 0;"></div>
+            </div>
+            <div style="padding:6px 0 44px;">
+              <div style="font-size:0.75rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#f87171;margin-bottom:8px;">Surplus Rush Window</div>
+              <div style="font-weight:700;font-size:1.3rem;margin-bottom:8px;color:#fff;">Orders come in, window closes</div>
+              <div style="font-size:1rem;color:rgba(255,255,255,0.68);line-height:1.6;">Short ordering window opens. After it closes, no new orders. Kitchen continues closing down.</div>
+            </div>
+          </div>
+
+          <div class="anim d4" style="display:flex;gap:0;align-items:stretch;">
+            <div style="display:flex;flex-direction:column;align-items:center;margin-right:28px;">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;">T-15</div>
+            </div>
+            <div style="padding:6px 0;">
+              <div style="font-size:0.75rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:#fca5a5;margin-bottom:8px;">Pack &amp; Pickup</div>
+              <div style="font-weight:700;font-size:1.3rem;margin-bottom:8px;color:#fff;">Pack once, pickup once</div>
+              <div style="font-size:1rem;color:rgba(255,255,255,0.68);line-height:1.6;">Packing happens once. Pickup happens once. Night shift ends on time.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 10 — TRUST & RELIABILITY
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-green" id="s7">
+  <div class="slide-inner">
+    <div class="grid-2" style="gap:64px;">
+      <div>
+        <div class="anim"><span class="label label-green">Built to Last</span></div>
+        <div class="anim d1"><h2 class="headline">No mystery bags.<br><span class="green-text">Ever.</span></h2></div>
+        <div class="divider-green anim d2"></div>
+        <div class="anim d2"><p class="subhead">A marketplace only works if it's trusted by both <span class="red-text" style="font-weight:700;margin-bottom:5px;font: size 2.1em;">restaurants</span> and <span class="red-text" style="font-weight:700;margin-bottom:5px;font: size 2.01em;">customers</span>.</p></div>
+        <div class="anim d3" style="margin-top:32px;">
+          <div style="background:var(--white);border-radius:var(--rad-lg);padding:28px 32px;box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:18px;">
+            <div style="font-size:3.0rem;line-height:1;">🛡️</div>
+            <div>
+              <div style="font-weight:700;font-size:1rem;margin-bottom:6px;">Closing-Shift Surplus Bonus Pool</div>
+              <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;">Funded per order. Rewards accurate listing and correct packing. Alignment without policing.</div>
+            </div>
+          </div>
+        </div>
+        <div class="anim d4" style="margin-top:16px;">
+          <div style="background:var(--white);border-radius:var(--rad-lg);padding:28px 32px;box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:18px;">
+            <div style="font-size:3.0rem;line-height:1;">✅</div>
+            <div>
+              <div style="font-weight:700;font-size:1rem;margin-bottom:6px;">Verification at Pickup</div>
+              <div style="font-size:1.0rem;color:var(--gray600);line-height:1.6;">Protects against no-shows and order confusion on both sides.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-top:8px;">
+        <ul class="checklist">
+          <li class="anim d2">
+            <div class="check-dot check-green">✓</div>
+            <div>
+              <div style="font-weight:700;margin-bottom:5px;font-size:1.4rem;">Clear listings, no mystery bags</div>
+              <div style="font-size:1.0rem;color:var(--gray600);">Customers know exactly what they're ordering, including ingredients and allergens.</div>
+            </div>
+          </li>
+          <li class="anim d3">
+            <div class="check-dot check-green">✓</div>
+            <div>
+              <div style="font-weight:700;margin-bottom:5px;font-size:1.4rem;">Ingredient &amp; allergen transparency</div>
+              <div style="font-size:1.0rem;color:var(--gray600);">Full disclosure on all listed surplus items.</div>
+            </div>
+          </li>
+          <li class="anim d4">
+            <div class="check-dot check-green">✓</div>
+            <div>
+              <div style="font-weight:700;margin-bottom:5px;font-size:1.4rem;">Restaurant brand control</div>
+              <div style="font-size:1.05rem;color:var(--gray600);">Partners decide what to list. The platform never overrides their identity.</div>
+            </div>
+          </li>
+          <li class="anim d5">
+            <div class="check-dot check-green">✓</div>
+            <div>
+              <div style="font-weight:700;margin-bottom:5px;font-size:1.4rem;">Smart discounts, not desperation pricing</div>
+              <div style="font-size:1.05rem;color:var(--gray600);">Items are priced attractively but not so low they devalue the brand.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 11 — ECONOMIC LOGIC
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="s8">
+  <div class="slide-inner">
+    <div class="anim"><span class="label label-red">Economics</span></div>
+    <div class="anim d1"><h2 class="headline">One <span class="red-text">$12 order.</span><br>Positive for everyone.</h2></div>
+    <div class="anim d1" style="margin-top:12px;margin-bottom:36px;"><p class="subhead">A $12 menu item becomes $9 delivered. Every party has a reason to participate.</p></div>
+
+    <div class="econ-grid anim d2">
+      <div class="econ-left">
+        <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.8;margin-bottom:12px;">Customer Pays</div>
+        <div class="econ-big">$9</div>
+        <div class="econ-label">$6 food + $3 delivery</div>
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.2);font-size:0.78rem;opacity:0.75;line-height:1.5;">Original menu value: $12<br>Surplus discount: 50% off food</div>
+      </div>
+
+      <div class="econ-right">
+        <div class="econ-section" style="border-top:3px solid var(--grn);">
+          <div class="econ-section-title green-text">Food Revenue — $6.00</div>
+          <div class="econ-rows">
+            <div class="econ-row">
+              <div class="econ-who"><span style="font-size:1.1rem;">🏪</span> Restaurant</div>
+              <div class="econ-bar-wrap"><div class="econ-bar-fill" data-w="40" style="background:var(--grn);"></div></div>
+              <div class="econ-amt green-text">$2.40 <span style="font-size:0.72rem;color:var(--gray400);">40%</span></div>
+            </div>
+            <div class="econ-row">
+              <div class="econ-who"><span style="font-size:1.1rem;">⭐</span> Staff Bonus Pool</div>
+              <div class="econ-bar-wrap"><div class="econ-bar-fill" data-w="10" style="background:#f59e0b;"></div></div>
+              <div class="econ-amt" style="color:#d97706;">$0.60 <span style="font-size:0.72rem;color:var(--gray400);">10%</span></div>
+            </div>
+            <div class="econ-row">
+              <div class="econ-who"><span style="font-size:1.1rem;">📱</span> SurplusEasy</div>
+              <div class="econ-bar-wrap"><div class="econ-bar-fill" data-w="50" style="background:var(--red);"></div></div>
+              <div class="econ-amt red-text">$3.00 <span style="font-size:0.72rem;color:var(--gray400);">50%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="econ-section" style="border-top:3px solid var(--red);">
+          <div class="econ-section-title red-text">Delivery Revenue — $3.00</div>
+          <div class="econ-rows">
+            <div class="econ-row">
+              <div class="econ-who"><span style="font-size:1.1rem;">🚗</span> Driver Base Pay</div>
+              <div class="econ-bar-wrap"><div class="econ-bar-fill" data-w="80" style="background:#6366f1;"></div></div>
+              <div class="econ-amt" style="color:#6366f1;">$2.40 <span style="font-size:0.72rem;color:var(--gray400);">80%</span></div>
+            </div>
+            <div class="econ-row">
+              <div class="econ-who"><span style="font-size:1.1rem;">📱</span> SurplusEasy</div>
+              <div class="econ-bar-wrap"><div class="econ-bar-fill" data-w="20" style="background:var(--red);"></div></div>
+              <div class="econ-amt red-text">$0.60 <span style="font-size:0.72rem;color:var(--gray400);">20%</span></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;padding:10px 14px;background:var(--grn-lite);border-radius:8px;font-size:0.8rem;color:var(--grn-dark);font-weight:600;">
+            💚 Tips go 100% to the driver — SurplusEasy takes no cut of tips.
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="anim d4 source">Illustrative pilot model — not a financial promise.</p>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 12 — CUSTOMER EXPERIENCE (APP DEMO)
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="s-appdemo" style="padding: 28px 48px; gap: 18px;">
+  <div style="text-align:center;">
+    <span class="label label-green" style="margin-bottom:10px;display:inline-block;">Live Demo</span>
+    <h2 class="headline" style="font-size:clamp(1.8rem,3.5vw,2.6rem);margin:0;">The customer <span class="green-text">experience.</span></h2>
+  </div>
+  <video
+    src="Appscreenrecording2.mp4"
+    autoplay loop muted playsinline
+    id="customer-demo-video"
+    style="height:calc(100vh - 180px);width:auto;max-width:100%;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,0.18);pointer-events:none;">
+  </video>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 13 — DRIVER APP DEMO
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s-driverdemo" style="background:#1a1a2e;padding:28px 48px;gap:18px;">
+  <div style="text-align:center;">
+    <span class="label" style="background:rgba(217,119,6,0.2);color:#f59e0b;margin-bottom:10px;display:inline-block;">Driver App</span>
+    <h2 class="headline" style="font-size:clamp(1.8rem,3.5vw,2.6rem);margin:0;color:#fff;">The driver <span style="color:#f59e0b;">experience.</span></h2>
+  </div>
+  <video
+    src="Driverappscreenrecording.mp4"
+    autoplay loop muted playsinline
+    style="height:calc(100vh - 180px);width:auto;max-width:100%;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:none;position:relative;z-index:1;">
+  </video>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 14 — RESTAURANT APP DEMO
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s-restdemo" style="background:#0f172a;padding:28px 48px;gap:18px;">
+  <div style="text-align:center;">
+    <span class="label" style="background:rgba(124,58,237,0.2);color:#a78bfa;margin-bottom:10px;display:inline-block;">Restaurant App</span>
+    <h2 class="headline" style="font-size:clamp(1.8rem,3.5vw,2.6rem);margin:0;color:#fff;">The restaurant <span style="color:#a78bfa;">experience.</span></h2>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:40px;width:100%;flex:1;min-height:0;">
+    <video
+      src="restaurantappscreenrecording.mp4"
+      autoplay loop muted playsinline
+      style="height:calc(100vh - 220px);width:auto;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,0.5);pointer-events:none;flex-shrink:0;">
+    </video>
+    <img
+      src="restaurantappstat.png"
+      alt="Restaurant Stats"
+      style="height:calc(100vh - 220px);width:auto;max-width:50%;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,0.5);object-fit:contain;flex-shrink:0;">
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 15 — RESTAURANT TIER PLANS
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-white" id="stiers">
+  <div class="slide-inner">
+    <div style="text-align:center;margin-bottom:44px;">
+      <div class="anim"><span class="label label-green">Restaurant Plans</span></div>
+      <div class="anim d1"><h2 class="headline">Three tiers. <span class="green-text">One platform.</span></h2></div>
+      <div class="anim d1" style="margin-top:10px;">
+        <p class="subhead">Priced per location per year. Start free, upgrade when the data earns it.</p>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch;">
+
+      <!-- FREE -->
+      <div class="anim d2" style="background:var(--white);border:1.5px solid var(--gray200);border-radius:var(--rad-lg);padding:32px 28px;display:flex;flex-direction:column;">
+        <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray400);margin-bottom:10px;">Free</div>
+        <div style="font-size:2.6rem;font-weight:900;color:var(--ink);line-height:1;margin-bottom:4px;">$0</div>
+        <div style="font-size:0.78rem;color:var(--gray400);margin-bottom:20px;">per location / year</div>
+        <div style="font-size:0.78rem;font-weight:600;color:var(--gray600);margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--gray200);">For operators testing the idea</div>
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Basic surplus listing</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Fixed price per item or kit</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Standard search placement</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Nightly orders &amp; payouts</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Pack list &amp; pickup verify</div>
+        </div>
+        <div style="margin-top:24px;padding:12px 16px;background:var(--gray100);border-radius:10px;font-size:0.75rem;color:var(--gray600);text-align:center;">Always free. No credit card required.</div>
+      </div>
+
+      <!-- PLUS — recommended -->
+      <div class="anim d3" style="background:var(--white);border:2.5px solid var(--grn);border-radius:var(--rad-lg);padding:32px 28px;display:flex;flex-direction:column;position:relative;box-shadow:0 8px 40px rgba(22,163,74,0.14);">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--grn);color:#fff;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border-radius:100px;padding:5px 16px;">⭐ Recommended</div>
+        <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--grn-dark);margin-bottom:10px;">Plus</div>
+        <div style="font-size:2.6rem;font-weight:900;color:var(--ink);line-height:1;margin-bottom:4px;">$299</div>
+        <div style="font-size:0.78rem;color:var(--gray400);margin-bottom:20px;">per location / year</div>
+        <div style="font-size:0.78rem;font-weight:600;color:var(--gray600);margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--gray200);">For operators who want visibility &amp; data</div>
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span><span><strong>Everything in Free</strong></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Featured "Available Now" placement</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Advanced analytics dashboard</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Monthly report exports</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;"><span style="color:var(--grn);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Kit builder &amp; templates</div>
+        </div>
+        <div style="margin-top:24px;padding:12px 16px;background:var(--grn-soft);border-radius:10px;font-size:0.75rem;color:var(--grn-dark);font-weight:600;text-align:center;">Free partners never hidden.</div>
+      </div>
+
+      <!-- PRO -->
+      <div class="anim d4" style="background:var(--ink);border:1.5px solid var(--ink);border-radius:var(--rad-lg);padding:32px 28px;display:flex;flex-direction:column;">
+        <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--red-mid);margin-bottom:10px;">Pro</div>
+        <div style="font-size:2.6rem;font-weight:900;color:#fff;line-height:1;margin-bottom:4px;">$799</div>
+        <div style="font-size:0.78rem;color:#6b7280;margin-bottom:20px;">per location / year</div>
+        <div style="font-size:0.78rem;font-weight:600;color:#9ca3af;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.1);">For operators who want the platform working for them</div>
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1;">
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#d1d5db;"><span style="color:var(--red-mid);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span><span><strong style="color:#fff;">Everything in Plus</strong></span></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#d1d5db;"><span style="color:var(--red-mid);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Dynamic pricing automation</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#d1d5db;"><span style="color:var(--red-mid);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Day &amp; time heatmaps</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#d1d5db;"><span style="color:var(--red-mid);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Multi-location ready</div>
+          <div style="display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;color:#d1d5db;"><span style="color:var(--red-mid);font-weight:800;flex-shrink:0;margin-top:1px;">✓</span>Priority onboarding &amp; support</div>
+        </div>
+        <div style="margin-top:24px;padding:12px 16px;background:rgba(220,38,38,0.12);border-radius:10px;font-size:0.75rem;color:var(--red-mid);font-weight:600;text-align:center;">Ready to scale before you need to.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 13 — NEXT STEPS
+════════════════════════════════════════════════════════════ -->
+<section class="slide bg-off" id="s11">
+  <div class="slide-inner">
+    <div style="text-align:center;">
+      <div class="anim"><span class="label label-green">What's Next</span></div>
+      <div class="anim d1"><h2 class="headline">90-day pilot.<br><span class="green-text">Build</span> around what users <span class="red-text">do.</span></h2></div>
+      <div class="anim d1" style="margin-top:12px;margin-bottom:44px;"><p class="subhead" style="max-width:580px;margin:12px auto 0;">Success is measurable: pounds diverted, orders fulfilled, restaurant satisfaction, repeat usage.</p></div>
+    </div>
+
+    <div class="anim d2">
+      <div class="timeline">
+        <div class="tl-item tl-green">
+          <div class="tl-month green-text">Month 1</div>
+          <div class="tl-title">Onboarding &amp; Workflow</div>
+          <div class="tl-desc">Sign first 4–6 restaurant partners. Test surplus listing and T40/T30/T15 workflow with real staff.</div>
+        </div>
+        <div class="tl-item tl-mixed">
+          <div class="tl-month" style="color:#d97706;">Month 2</div>
+          <div class="tl-title">Routing &amp; Pricing</div>
+          <div class="tl-desc">Optimize delivery radius. Test price points that clear surplus without harming brand quality.</div>
+        </div>
+        <div class="tl-item tl-red">
+          <div class="tl-month red-text">Month 3</div>
+          <div class="tl-title">Scale Within Radius</div>
+          <div class="tl-desc">Grow to 15–20 partners. Measure diversion and ROI. Publish findings for scale decision.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anim d3" style="margin-top:36px;">
+      <div style="font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray400);margin-bottom:20px;text-align:center;">Growth Roadmap</div>
+      <div class="roadmap">
+        <div class="roadmap-item rm-1">
+          <div class="roadmap-dot" style="background:var(--grn-soft);font-size:1.3rem;">🌱</div>
+          <div class="roadmap-stage green-text">MVP</div>
+          <div class="roadmap-title">Core Platform</div>
+          <div class="roadmap-desc">Listing, ordering, packing workflow, driver app basics.</div>
+        </div>
+        <div class="roadmap-item rm-2">
+          <div class="roadmap-dot" style="background:var(--grn-soft);font-size:1.3rem;">🚀</div>
+          <div class="roadmap-stage" style="color:var(--grn-dark);">Pilot</div>
+          <div class="roadmap-title">Houston 90 Days</div>
+          <div class="roadmap-desc">Prove the model with real partners, real orders, real data.</div>
+        </div>
+        <div class="roadmap-item rm-3">
+          <div class="roadmap-dot" style="background:var(--red-soft);font-size:1.3rem;">🏙️</div>
+          <div class="roadmap-stage" style="color:var(--red-dark);">Scale City</div>
+          <div class="roadmap-title">Houston-Wide</div>
+          <div class="roadmap-desc">Expand zones, add partner types, increase nightly order volume.</div>
+        </div>
+        <div class="roadmap-item rm-4">
+          <div class="roadmap-dot" style="background:var(--red-soft);font-size:1.3rem;">🌎</div>
+          <div class="roadmap-stage red-text">New Markets</div>
+          <div class="roadmap-title">Multi-City</div>
+          <div class="roadmap-desc">Replicate dense-radius model in cities with similar demographics.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<!-- ════════════════════════════════════════════════════════════
+  SLIDE 14 — QUESTIONS
+════════════════════════════════════════════════════════════ -->
+<section class="slide" id="s13" style="background:var(--white);text-align:center;">
+  <!-- decorative background rings -->
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;">
+    <div style="width:600px;height:600px;border-radius:50%;border:1.5px solid rgba(22,163,74,0.1);position:absolute;"></div>
+    <div style="width:420px;height:420px;border-radius:50%;border:1.5px solid rgba(22,163,74,0.14);position:absolute;"></div>
+    <div style="width:260px;height:260px;border-radius:50%;border:1.5px solid rgba(22,163,74,0.18);position:absolute;"></div>
+    <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--grn-soft),var(--red-soft));position:absolute;opacity:0.5;"></div>
+  </div>
+
+  <div class="slide-inner" style="position:relative;z-index:2;">
+    <div class="anim d1">
+      <div style="font-size:clamp(4rem,12vw,9rem);font-weight:900;letter-spacing:-0.04em;line-height:1;background:linear-gradient(135deg,var(--grn) 0%,var(--red) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        Questions?
+      </div>
+    </div>
+    </div>
+    <div class="anim d4" style="margin-top:56px;padding-top:32px;border-top:1px solid var(--gray200);">
+      <div style="font-size:2.4rem;font-weight:900;letter-spacing:-0.025em;">
+        <span style="color:var(--grn);">Surplus</span><span style="color:var(--red);">Easy</span>
+      </div>
+      <div style="font-size:1.2rem;color:var(--gray400);margin-top:8px;letter-spacing:0.04em;">Turning surplus food into late-night service </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+   JAVASCRIPT
+══════════════════════════════════════════════════════════════ -->
+<script>
+/* ── Customer demo video speed ── */
+const customerVid = document.getElementById('customer-demo-video');
+if (customerVid) {
+  customerVid.addEventListener('loadedmetadata', () => { customerVid.playbackRate = 1.25; });
+  customerVid.playbackRate = 1.25;
+}
+
+const slides   = document.querySelectorAll('.slide');
+const dots     = document.querySelectorAll('.nav-dot');
+const counter  = document.getElementById('slide-counter');
+const progress = document.getElementById('progress-bar');
+let current = 0;
+const countedEls = new Set();
+const barredEls  = new Set();
+const econEls    = new Set();
+let donutDone    = false;
+
+/* ── Scroll animation observer ── */
+const animObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); animObs.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.anim').forEach(el => animObs.observe(el));
+
+/* ── Slide tracking observer ── */
+const slideObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting || e.intersectionRatio < 0.45) return;
+    const idx = [...slides].indexOf(e.target);
+    setActive(idx);
+
+    // number counters
+    e.target.querySelectorAll('[data-count]').forEach(el => {
+      if (countedEls.has(el)) return;
+      countedEls.add(el);
+      animCount(el);
+    });
+
+    // stat bars
+    e.target.querySelectorAll('.stat-bar-fill').forEach(el => {
+      if (barredEls.has(el)) return;
+      barredEls.add(el);
+      setTimeout(() => { el.style.width = el.dataset.width + '%'; }, 500);
+    });
+
+    // econ bars
+    e.target.querySelectorAll('.econ-bar-fill').forEach(el => {
+      if (econEls.has(el)) return;
+      econEls.add(el);
+      setTimeout(() => { el.style.width = el.dataset.w + '%'; }, 600);
+    });
+
+    // animated donut chart
+    if (e.target.id === 's10' && !donutDone) {
+      donutDone = true;
+      setTimeout(animateDonut, 400);
+    }
+
+    // slide 2 text animation
+    if (e.target.id === 's2') triggerProblem();
+  });
+}, { threshold: 0.45 });
+
+slides.forEach(s => slideObs.observe(s));
+
+function setActive(idx) {
+  current = idx;
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  counter.textContent = String(idx + 1).padStart(2,'0') + ' / ' + slides.length;
+  progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+}
+
+/* ── Nav dot clicks ── */
+dots.forEach((d, i) => d.addEventListener('click', () =>
+  slides[i].scrollIntoView({ behavior: 'smooth' })));
+
+/* ── Keyboard navigation ── */
+document.addEventListener('keydown', e => {
+  if (['ArrowDown','PageDown',' '].includes(e.key)) {
+    e.preventDefault();
+    slides[Math.min(current + 1, slides.length - 1)].scrollIntoView({ behavior: 'smooth' });
+  }
+  if (['ArrowUp','PageUp'].includes(e.key)) {
+    e.preventDefault();
+    slides[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+/* ── Number counter ── */
+function animCount(el) {
+  const target  = parseFloat(el.dataset.count);
+  const suffix  = el.dataset.suffix || '';
+  const isFloat = target % 1 !== 0;
+  const dur     = 1500;
+  const start   = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    const v = target * e;
+    el.textContent = (isFloat ? v.toFixed(1) : Math.floor(v)) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = (isFloat ? target.toFixed(1) : target) + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ── Animated donut chart ── */
+function animateDonut() {
+  const C = 477.52; // 2π × 76
+  const segs = [
+    { id: 'dc-seg1', pct: 0.17, offset: 0 },
+    { id: 'dc-seg2', pct: 0.13, offset: 0.17 * C },
+    { id: 'dc-seg3', pct: 0.23, offset: (0.17 + 0.13) * C },
+    { id: 'dc-seg4', pct: 0.47, offset: (0.17 + 0.13 + 0.23) * C },
+  ];
+  const dur = 1400;
+  const t0  = performance.now();
+  const els = segs.map(s => ({ ...s, el: document.getElementById(s.id) }));
+  function tick(now) {
+    const p    = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    els.forEach(({ el, pct, offset }) => {
+      if (!el) return;
+      const len = pct * C * ease;
+      el.setAttribute('stroke-dasharray', `${len} ${C}`);
+      el.setAttribute('stroke-dashoffset', -offset);
+    });
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ── Slide 2 staggered problem lines ── */
+let problemTriggered = false;
+function triggerProblem() {
+  if (problemTriggered) return;
+  problemTriggered = true;
+  const tag = document.getElementById('tonight-tag');
+  const sub = document.getElementById('problem-sub');
+  const lines = document.querySelectorAll('.problem-line span');
+  setTimeout(() => { tag.style.opacity = '1'; }, 150);
+  lines.forEach((s, i) => {
+    setTimeout(() => { s.classList.add('in'); }, 400 + i * 300);
+  });
+  setTimeout(() => { sub.style.opacity = '1'; }, 1400);
+}
+</script>
+</body>
+</html>
